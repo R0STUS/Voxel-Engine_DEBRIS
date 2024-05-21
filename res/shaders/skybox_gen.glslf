@@ -247,49 +247,54 @@ uniform float u_fog;
 
 #include <commons>
 
+
 void main() {
-    vec3 camera_position = vec3(0.0f, PLANET_RADIUS+1.0f, 0.0f);
-    vec3 camera_vector = normalize(u_xaxis * v_coord.x*1.005 + 
-                                   u_yaxis * -v_coord.y*1.005 -
-                                   u_zaxis);
-
+    vec3 camera_position = vec3(0.0f, PLANET_RADIUS + 1.0f, 0.0f);
+    vec3 camera_vector = normalize(u_xaxis * v_coord.x * 1.005 + u_yaxis * -v_coord.y * 1.005 - u_zaxis);
+    
     camera_vector = mix(camera_vector, vec3(0, 1, 0), min(1.0, u_fog));
-
-    float fog = 1.0f / (u_fog*0.5 + 1.0);
-    // hide darkness at horizon
-    camera_vector.y = max(0.01, camera_vector.y)*(1.0-u_mie*0.08) + 0.08*u_mie;  
-    //camera_vector = normalize(camera_vector);
-
-    // the color of this pixel
-    vec3 col = vec3(0.0);//scene.xyz;
-    // get the atmosphere color
+    
+    float fog = 1.0f / (u_fog * 0.5 + 1.0);
+    camera_vector.y = max(0.01, camera_vector.y) * (1.0 - u_mie * 0.08) + 0.08 * u_mie;
+    
+    vec3 col = vec3(0.0);
+    vec3 finalColor = vec3(0.0);
+    
     col += calculate_scattering(
-    	camera_position,				// the position of the camera
-        camera_vector, 					// the camera vector (ray direction of this pixel)
-        1e12f, 						    // max dist, essentially the scene depth
-        vec3(0.0f),						// scene color, the color of the current pixel being rendered
-        u_lightDir,						// light direction
-        vec3(40.0*fog),						// light intensity, 40 looks nice
-        PLANET_POS,						// position of the planet
-        PLANET_RADIUS,                  // radius of the planet in meters
-        ATMOS_RADIUS,                   // radius of the atmosphere in meters
-        RAY_BETA,						// Rayleigh scattering coefficient
-        MIE_BETA,                       // Mie scattering coefficient
-        ABSORPTION_BETA,                // Absorbtion coefficient
-        AMBIENT_BETA,					// ambient scattering, turned off for now. This causes the air to glow a bit when no light reaches it
-        G*fog*0.7,                          	// Mie preferred scattering direction
-        HEIGHT_RAY,                     // Rayleigh scale height
-        HEIGHT_MIE*u_mie*u_mie,                     // Mie scale height
-        HEIGHT_ABSORPTION,				// the height at which the most absorption happens
-        ABSORPTION_FALLOFF,				// how fast the absorption falls off from the absorption height 
-        PRIMARY_STEPS*u_quality, 		// steps in the ray direction 
-        LIGHT_STEPS*u_quality 			// steps in the light direction
+        camera_position,
+        camera_vector,
+        1e12f,
+        vec3(0.0f),
+        u_lightDir,
+        vec3(40.0 * fog),
+        PLANET_POS,
+        PLANET_RADIUS,
+        ATMOS_RADIUS,
+        RAY_BETA,
+        MIE_BETA,
+        ABSORPTION_BETA,
+        AMBIENT_BETA,
+        G * fog * 0.7,
+        HEIGHT_RAY,
+        HEIGHT_MIE * u_mie * u_mie,
+        HEIGHT_ABSORPTION,
+        ABSORPTION_FALLOFF,
+        PRIMARY_STEPS * u_quality,
+        LIGHT_STEPS * u_quality
     );
-        
-    // apply exposure, removing this makes the brighter colors look ugly
-    // you can play around with removing this
+    
     col = 1.0 - exp(-col);
     col = min(col, vec3(1.0));
-    // Output to screen
-    f_color = vec4(col, 1.0);
+
+    float dayFactor = smoothstep(0.0, 0.5, u_lightDir.y);
+    float nightFactor = smoothstep(0.0, 0.5, -u_lightDir.y);
+
+    vec3 sunriseColor = vec3(1.0, 0.85, 0.1);
+    vec3 dayColor = vec3(0.5, 0.745, 1.0);
+    vec3 nightColor = vec3(0.0, 0.0, 1.0);
+
+    vec3 finalSkyColor = mix(sunriseColor, dayColor, dayFactor);
+    finalSkyColor = mix(finalSkyColor, nightColor, nightFactor);
+
+    f_color = vec4(finalSkyColor * col, 1.0);
 }

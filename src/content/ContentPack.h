@@ -31,7 +31,7 @@ struct ContentPack {
     std::string title = "untitled";
     std::string version = "0.0";
     std::string creator = "";
-    std::string description = "no description";
+    std::string description = "n/a";
     fs::path folder;
     std::vector<std::string> dependencies;
 
@@ -41,6 +41,7 @@ struct ContentPack {
     static const std::string CONTENT_FILENAME;
     static const fs::path BLOCKS_FOLDER;
     static const fs::path ITEMS_FOLDER;
+    static const fs::path SHADERS_FOLDER;
     static const std::vector<std::string> RESERVED_NAMES;
 
     static bool is_pack(fs::path folder);

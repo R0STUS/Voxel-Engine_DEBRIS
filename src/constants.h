@@ -14,7 +14,7 @@ inline constexpr int BLOCK_AIR = 0;
 inline constexpr int ITEM_EMPTY = 0;
 
 inline constexpr int CHUNK_W = 16;
-inline constexpr int CHUNK_H = 256;
+inline constexpr int CHUNK_H = 364;
 inline constexpr int CHUNK_D = 16;
 
 inline constexpr uint VOXEL_USER_BITS = 8;

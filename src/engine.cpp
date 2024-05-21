@@ -16,6 +16,9 @@
 #include "world/WorldGenerators.h"
 #include "voxels/DefaultWorldGenerator.h"
 #include "voxels/FlatWorldGenerator.h"
+#include "voxels/OceanWorldGenerator.h"
+#include "voxels/DebrisWorldGenerator.h"
+#include "voxels/TropicalWorldGenerator.h"
 #include "window/Window.h"
 #include "window/Events.h"
 #include "window/Camera.h"
@@ -48,6 +51,9 @@ namespace fs = std::filesystem;
 void addWorldGenerators() {
     WorldGenerators::addGenerator<DefaultWorldGenerator>("core:default");
     WorldGenerators::addGenerator<FlatWorldGenerator>("core:flat");
+    WorldGenerators::addGenerator<DebrisWorldGenerator>("core:debris");
+    WorldGenerators::addGenerator<OceanWorldGenerator>("core:ocean");
+//    WorldGenerators::addGenerator<TropicalWorldGenerator>("core:tropical");
 }
 
 Engine::Engine(EngineSettings& settings, EnginePaths* paths) 

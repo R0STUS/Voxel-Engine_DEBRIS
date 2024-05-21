@@ -45,7 +45,8 @@ namespace menus {
 void menus::create_version_label(Engine* engine) {
     auto gui = engine->getGUI();
     auto vlabel = std::make_shared<gui::Label>(
-        util::str2wstr_utf8(ENGINE_VERSION_STRING+" development build ")
+        util::str2wstr_utf8(" ")
+//        util::str2wstr_utf8(ENGINE_VERSION_STRING+" development build ")
     );
     vlabel->setZIndex(1000);
     vlabel->setColor(glm::vec4(1, 1, 1, 0.5f));
@@ -219,6 +220,66 @@ void menus::open_world(std::string name, Engine* engine, bool confirmConvert) {
         } catch (const world_load_error& error) {
             guiutil::alert(
                 engine->getGUI(), langs::get(L"Error")+L": "+
+                util::str2wstr_utf8(error.what())
+            );
+            return;
+        }
+    }
+}
+
+void menus::open_dimension(std::string name, Engine* engine, bool confirmConvert) {
+    auto paths = engine->getPaths();
+    auto folder = paths->getWorldsFolder() / fs::u8path(name) / fs::u8path("DIM1");
+    try {
+        engine->loadWorldContent(folder);
+    }
+    catch (const contentpack_error& error) {
+        // could not to find or read pack
+        guiutil::alert(
+            engine->getGUI(), langs::get(L"error.pack-not-found") + L": " +
+            util::str2wstr_utf8(error.getPackId())
+        );
+        return;
+    }
+    catch (const std::runtime_error& error) {
+        guiutil::alert(
+            engine->getGUI(), langs::get(L"Content Error", L"menu") + L": " +
+            util::str2wstr_utf8(error.what())
+        );
+        return;
+    }
+
+    auto& packs = engine->getContentPacks();
+    auto* content = engine->getContent();
+    auto& settings = engine->getSettings();
+
+    std::shared_ptr<ContentLUT> lut(World::checkIndices(folder, content));
+    if (lut) {
+        if (lut->hasMissingContent()) {
+            show_content_missing(engine, content, lut);
+        }
+        else {
+            if (confirmConvert) {
+                show_process_panel(engine, std::make_shared<WorldConverter>(folder, content, lut), [=]() {
+                    open_world(name, engine, false);
+                    });
+            }
+            else {
+                show_convert_request(engine, content, lut, folder, [=]() {
+                    open_world(name, engine, false);
+                    });
+            }
+        }
+    }
+    else {
+        try {
+            Level* level = World::load(folder, settings, content, packs);
+            level->world->wfile->createDirectories();
+            engine->setScreen(std::make_shared<LevelScreen>(engine, level));
+        }
+        catch (const world_load_error& error) {
+            guiutil::alert(
+                engine->getGUI(), langs::get(L"Error") + L": " +
                 util::str2wstr_utf8(error.what())
             );
             return;

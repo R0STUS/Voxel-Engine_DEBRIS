@@ -25,6 +25,10 @@
     "pane",
     "pipe",
     "lightbulb",
-    "torch"
+    "torch",
+    "brick_debris",
+    "debris",
+    "moss",
+    "trotyl"
   ]
 }

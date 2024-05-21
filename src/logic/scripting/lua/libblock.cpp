@@ -59,6 +59,44 @@ int l_set_block(lua_State* L) {
     return 0;
 }
 
+static lua::luaint X = 887712735;
+static lua::luaint A1 = 710425958647;
+static lua::luaint B1 = 813638512810;
+static lua::luaint M1 = 711719770602;
+
+int l_random(lua_State* L) {
+    X = (A1 * X + B1) % M1;
+    lua_pushinteger(L, X);
+    return 1;
+}
+
+int l_nextBoolean(lua_State* L) {
+    lua_pushcfunction(L, l_random);
+    lua::luaint r = X;
+    lua_pushboolean(L, (r / 20000000000 % 2) >= 1);
+    return 1;
+}
+
+int l_resetSeed(lua_State* L) {
+    X = 887712735;
+    return 0;
+}
+
+
+
+int l_init_random(lua_State* L) {
+    lua_pushcfunction(L, l_nextBoolean);
+    lua_setglobal(L, "nextBoolean");
+
+    lua_pushcfunction(L, l_resetSeed);
+    lua_setglobal(L, "resetSeed");
+
+    lua_pushcfunction(L, l_random);
+    lua_setglobal(L, "random");
+
+    return 0;
+}
+
 int l_get_block(lua_State* L) {
     lua::luaint x = lua_tointeger(L, 1);
     lua::luaint y = lua_tointeger(L, 2);
@@ -67,6 +105,46 @@ int l_get_block(lua_State* L) {
     int id = vox == nullptr ? -1 : vox->id;
     lua_pushinteger(L, id);
     return 1;
+}
+
+int l_explode(lua_State* L) {
+    lua::luaint id = lua_tointeger(L, 1);
+    lua::luaint x = lua_tointeger(L, 2);
+    lua::luaint y = lua_tointeger(L, 3);
+    lua::luaint z = lua_tointeger(L, 4);
+    lua::luaint strength = lua_tointeger(L, 5);
+    bool hasParent = lua_toboolean(L, 6);
+    lua::luaint px = lua_tointeger(L, 7);
+    lua::luaint py = lua_tointeger(L, 8);
+    lua::luaint pz = lua_tointeger(L, 9);
+
+    if (id < 0 || size_t(id) >= scripting::indices->countBlockDefs()) {
+        return 0;
+    }
+
+    lua_pushcfunction(L, l_nextBoolean);
+    lua_pushlightuserdata(L, scripting::level);
+    lua_pushcfunction(L, l_block_name);
+    lua_pushcfunction(L, l_get_block);
+    lua_pushcfunction(L, l_block_index);
+    lua_pushcfunction(L, l_set_block);
+
+    lua_newtable(L);
+    lua_setglobal(L, "explode");
+
+    lua_getglobal(L, "explode");
+    lua_pushinteger(L, id);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    lua_pushinteger(L, z);
+    lua_pushinteger(L, strength);
+    lua_pushboolean(L, hasParent);
+    lua_pushinteger(L, px);
+    lua_pushinteger(L, py);
+    lua_pushinteger(L, pz);
+    lua_call(L, 9, 0);
+
+    return 0;
 }
 
 int l_get_block_x(lua_State* L) {

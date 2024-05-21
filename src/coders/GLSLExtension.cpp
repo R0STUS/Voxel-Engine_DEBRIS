@@ -9,6 +9,12 @@
 
 namespace fs = std::filesystem;
 
+std::string newSource = "";
+
+void reSource(std::string toSource) {
+    newSource = toSource;
+}
+
 void GLSLExtension::setVersion(std::string version) {
     this->version = version;
 }

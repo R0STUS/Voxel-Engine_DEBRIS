@@ -1,0 +1,12 @@
+{
+  "material": "base:moss",
+  "texture-faces": [
+    "tnt",
+    "tnt",
+    "tnt_top",
+    "tnt_top",
+    "tnt",
+    "tnt"
+  ],
+  "rotation": "pipe"
+}

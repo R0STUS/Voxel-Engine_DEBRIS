@@ -42,6 +42,7 @@ namespace menus {
     /// @param engine engine instance
     /// @param confirmConvert automatically confirm convert if requested
     void open_world(std::string name, Engine* engine, bool confirmConvert);
+    void open_dimension(std::string name, Engine* engine, bool confirmConvert);
 
     /// @brief Create development version label at the top-right screen corner
     void create_version_label(Engine* engine);

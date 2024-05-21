@@ -1,0 +1,42 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "GLEW_DIR",
+          "value": "C:/IT/VoxelEngine-Cpp-main/libs/include",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENAL_INCLUDE_DIR",
+          "value": "C:/IT/VoxelEngine-Cpp-main/libs/include",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENAL_LIBRARY",
+          "value": "C:/IT/VoxelEngine-Cpp-main/libs/lib/OpenAL32.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GLEW_SHARED_LIBRARY_DEBUG",
+          "value": "C:/IT/VoxelEngine-Cpp-main/libs/lib/glew32.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GLEW_STATIC_LIBRARY_DEBUG",
+          "value": "C:/IT/VoxelEngine-Cpp-main/libs/lib/glew32_static.lib",
+          "type": "FILEPATH"
+        }
+      ]
+    }
+  ]
+}

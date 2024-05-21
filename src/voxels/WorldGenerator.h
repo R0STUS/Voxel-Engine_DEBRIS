@@ -19,6 +19,17 @@ protected:
 	blockid_t const idGrass;
 	blockid_t const idFlower;
 	blockid_t const idBazalt;
+	blockid_t const idDebris;
+	blockid_t const idMoss;
+	blockid_t const idBrick;
+	blockid_t const idBrickDebris;
+	blockid_t const idAir;
+	blockid_t const idRust;
+	blockid_t const idJungleTrunk;
+	blockid_t const idJungleLeaves;
+	blockid_t const idVines;
+	blockid_t const idPalmTrunk;
+	blockid_t const idPalmLeaves;
 public:
 	WorldGenerator(const Content* content);
     virtual ~WorldGenerator() = default;
