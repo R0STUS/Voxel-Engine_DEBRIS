@@ -1,6 +1,6 @@
 # Run with compiled executable file:
 
-[Download | Скачать](https://github.com/MihailRis/VoxelEngine-Cpp/releases/latest)
+[Download | Скачать](https://github.com/R0STUS/VoxelEngine-DEBRIS/releases/latest)
 
 
 # Controls:
