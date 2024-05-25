@@ -3,6 +3,7 @@
 #include <memory>
 #include <iostream>
 #include <assert.h>
+#include <fstream>
 #include <vector>
 #include <glm/glm.hpp>
 #include <filesystem>
@@ -16,8 +17,8 @@
 #include "world/WorldGenerators.h"
 #include "voxels/DefaultWorldGenerator.h"
 #include "voxels/FlatWorldGenerator.h"
-#include "voxels/OceanWorldGenerator.h"
-#include "voxels/DebrisWorldGenerator.h"
+#include "voxels/CubicWorldGenerator.h"
+ #include "voxels/DebrisWorldGenerator.h"
 #include "voxels/TropicalWorldGenerator.h"
 #include "window/Window.h"
 #include "window/Events.h"
@@ -52,7 +53,7 @@ void addWorldGenerators() {
     WorldGenerators::addGenerator<DefaultWorldGenerator>("core:default");
     WorldGenerators::addGenerator<FlatWorldGenerator>("core:flat");
     WorldGenerators::addGenerator<DebrisWorldGenerator>("core:debris");
-    WorldGenerators::addGenerator<OceanWorldGenerator>("core:ocean");
+    WorldGenerators::addGenerator<CubicWorldGenerator>("core:cubic");
 //    WorldGenerators::addGenerator<TropicalWorldGenerator>("core:tropical");
 }
 
@@ -139,6 +140,8 @@ void Engine::mainloop() {
     Batch2D batch(1024);
     lastTime = Window::time();
 
+    installShaders();
+
     std::cout << "-- initialized" << std::endl;
     while (!Window::isShouldClose()){
         assert(screen != nullptr);
@@ -166,6 +169,7 @@ void Engine::mainloop() {
 }
 
 Engine::~Engine() {
+    uninstallShaders();
     std::cout << "-- shutting down" << std::endl;
     if (screen) {
         screen->onEngineShutdown();
@@ -272,6 +276,80 @@ void Engine::setLanguage(std::string locale) {
     settings.ui.language = locale;
     langs::setup(paths->getResources(), locale, contentPacks);
     menus::create_menus(this);
+}
+
+void Engine::installShaders() {
+    bool isUnis = false;
+
+    const fs::path content_path = "res/content";
+
+    std::vector<fs::path> folders;
+    for (const auto& entry : fs::directory_iterator(content_path)) {
+        if (fs::is_directory(entry)) {
+            folders.push_back(entry.path());
+        }
+    }
+
+    std::sort(folders.begin(), folders.end());
+
+    const fs::path first_folder = folders.empty() ? "" : folders.front();
+
+    const fs::path source_path = first_folder / "shaders" / "screen.glslf";
+
+    const fs::path dest_path = "res/shaders/screen.glslf";
+
+    if (!fs::exists(source_path)) {
+        std::cerr << "Could NOT open file: " << source_path << std::endl;
+    }
+
+    std::ifstream source_file(source_path, std::ios::binary);
+    if (!source_file.is_open()) {
+        std::cerr << "Could NOT open file: " << source_path << std::endl;
+        isUnis = true;
+    }
+
+    std::ofstream dest_file(dest_path, std::ios::binary);
+    if (!dest_file.is_open()) {
+        std::cerr << "Could NOT open file: " << dest_path << std::endl;
+    }
+
+    dest_file << source_file.rdbuf();
+
+    source_file.close();
+    dest_file.close();
+
+    std::cout << "Shaders was installed!" << std::endl;
+    if (isUnis == true) {
+        uninstallShaders();
+    }
+}
+
+void Engine::uninstallShaders() {
+
+    const fs::path source_path = "res/default/screen.glslf";
+
+    const fs::path dest_path = "res/shaders/screen.glslf";
+
+    if (!fs::exists(source_path)) {
+        std::cerr << "Could NOT open file: " << source_path << std::endl;
+    }
+
+    std::ifstream source_file(source_path, std::ios::binary);
+    if (!source_file.is_open()) {
+        std::cerr << "Could NOT open file: " << source_path << std::endl;
+    }
+
+    std::ofstream dest_file(dest_path, std::ios::binary);
+    if (!dest_file.is_open()) {
+        std::cerr << "Could NOT open file: " << dest_path << std::endl;
+    }
+
+    dest_file << source_file.rdbuf();
+
+    source_file.close();
+    dest_file.close();
+
+    std::cout << "Shaders was uninstalled!" << std::endl;
 }
 
 gui::GUI* Engine::getGUI() {

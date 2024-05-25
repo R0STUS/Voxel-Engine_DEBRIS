@@ -103,6 +103,9 @@ public:
 
     /// @brief Get current screen
     std::shared_ptr<Screen> getScreen();
+
+    static void installShaders();
+    static void uninstallShaders();
 };
 
 #endif // SRC_ENGINE_H_

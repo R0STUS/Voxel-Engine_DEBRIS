@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "menu_commons.h"
+#include "menu_settings.h"
 
 #include "../locale/langs.h"
 #include "../gui/GUI.h"

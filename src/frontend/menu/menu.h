@@ -6,6 +6,7 @@
 #include <memory>
 #include <functional>
 #include "../../content/ContentPack.h"
+#include "../../engine.h"
 
 
 namespace gui {

@@ -1,4 +1,4 @@
-#include "OceanWorldGenerator.h"
+#include "CubicWorldGenerator.h"
 #include "voxel.h"
 #include "Chunk.h"
 #include <cstdlib>
@@ -17,11 +17,17 @@
 #include "../maths/util.h"
 #include "../core_defs.h"
 
-void OceanWorldGenerator::generate(voxel* voxels, int cx, int cz, int seed) {
+void CubicWorldGenerator::generate(voxel* voxels, int cx, int cz, int seed) {
 
     int padding = 8;
 
-    int SEA_LEVEL = 120;
+    float height = rand() % 59 + 1;
+
+    float height2 = height;
+
+    bool go = false;
+
+    int SEA_LEVEL = 35;
 
     for (int z = -padding; z < CHUNK_D + padding; z++) {
         for (int x = -padding; x < CHUNK_W + padding; x++) {
@@ -40,22 +46,26 @@ void OceanWorldGenerator::generate(voxel* voxels, int cx, int cz, int seed) {
         int cur_z = z + cz * CHUNK_D;
         for (int x = 0; x < CHUNK_W; x++) {
             int cur_x = x + cx * CHUNK_W;
-            float height = rand() % 69 + 1;
-
+            while (!go) {
+                float height = rand() % 49 + 1;
+                if (height < 45) {
+                }
+                else
+                    go = true;
+            }
+            float height2 = height;
+            go = false;
             for (int cur_y = 0; cur_y < CHUNK_H; cur_y++) {
                 int id = cur_y < SEA_LEVEL ? idWater : BLOCK_AIR;
                 int states = 0;
                 if (cur_y < (height - 6)) {
                     id = idStone;
                 }
-                else if (cur_y < height + 1) {
+                else if (cur_y < height) {
                     id = idDirt;
                 }
-                if (cur_y == SEA_LEVEL - 1 && cur_x == 0 && cur_z == 0) {
+                if (cur_y == height && cur_y > SEA_LEVEL - 1) {
                     id = idGrassBlock;
-                }
-                if (cur_y < SEA_LEVEL - 1 && cur_x == 0 && cur_z == 0) {
-                    id = idDirt;
                 }
                 if (cur_y <= 2)
                     id = idBazalt;
