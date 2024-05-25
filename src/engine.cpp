@@ -140,7 +140,23 @@ void Engine::mainloop() {
     Batch2D batch(1024);
     lastTime = Window::time();
 
-    installShaders();
+    std::cout << "-- Loading shaders" << std::endl;
+
+    installShaders("lib/commons.glsl");
+    installShaders("screen.glslf");
+    installShaders("screen.glslv");
+    installShaders("background.glslf");
+    installShaders("background.glslv");
+    installShaders("lines.glslf");
+    installShaders("lines.glslv");
+    installShaders("skybox_gen.glslf");
+    installShaders("skybox_gen.glslv");
+    installShaders("main.glslf");
+    installShaders("main.glslv");
+    installShaders("ui.glslf");
+    installShaders("ui.glslv");
+    installShaders("ui3d.glslf");
+    installShaders("ui3d.glslv");
 
     std::cout << "-- initialized" << std::endl;
     while (!Window::isShouldClose()){
@@ -169,7 +185,20 @@ void Engine::mainloop() {
 }
 
 Engine::~Engine() {
-    uninstallShaders();
+    uninstallShaders("screen.glslf");
+    uninstallShaders("screen.glslv");
+    uninstallShaders("background.glslf");
+    uninstallShaders("background.glslv");
+    uninstallShaders("lines.glslf");
+    uninstallShaders("lines.glslv");
+    uninstallShaders("skybox_gen.glslf");
+    uninstallShaders("skybox_gen.glslv");
+    uninstallShaders("main.glslf");
+    uninstallShaders("main.glslv");
+    uninstallShaders("ui.glslf");
+    uninstallShaders("ui.glslv");
+    uninstallShaders("ui3d.glslf");
+    uninstallShaders("ui3d.glslv");
     std::cout << "-- shutting down" << std::endl;
     if (screen) {
         screen->onEngineShutdown();
@@ -278,7 +307,7 @@ void Engine::setLanguage(std::string locale) {
     menus::create_menus(this);
 }
 
-void Engine::installShaders() {
+void Engine::installShaders(std::string fileName) {
     bool isUnis = false;
 
     const fs::path content_path = "res/content";
@@ -294,9 +323,9 @@ void Engine::installShaders() {
 
     const fs::path first_folder = folders.empty() ? "" : folders.front();
 
-    const fs::path source_path = first_folder / "shaders" / "screen.glslf";
+    const fs::path source_path = first_folder / "shaders" / fileName;
 
-    const fs::path dest_path = "res/shaders/screen.glslf";
+    const fs::path dest_path = "res/shaders/" + fileName;
 
     if (!fs::exists(source_path)) {
         std::cerr << "Could NOT open file: " << source_path << std::endl;
@@ -318,17 +347,17 @@ void Engine::installShaders() {
     source_file.close();
     dest_file.close();
 
-    std::cout << "Shaders was installed!" << std::endl;
+    std::cout << "Shader " << fileName << " was installed!" << std::endl;
     if (isUnis == true) {
-        uninstallShaders();
+        uninstallShaders(fileName);
     }
 }
 
-void Engine::uninstallShaders() {
+void Engine::uninstallShaders(std::string fileName) {
 
-    const fs::path source_path = "res/default/screen.glslf";
+    const fs::path source_path = "res/default/" + fileName;
 
-    const fs::path dest_path = "res/shaders/screen.glslf";
+    const fs::path dest_path = "res/shaders/" + fileName;
 
     if (!fs::exists(source_path)) {
         std::cerr << "Could NOT open file: " << source_path << std::endl;
@@ -349,7 +378,7 @@ void Engine::uninstallShaders() {
     source_file.close();
     dest_file.close();
 
-    std::cout << "Shaders was uninstalled!" << std::endl;
+    std::cout << "Shader " << fileName << " was uncompiled!" << std::endl;
 }
 
 gui::GUI* Engine::getGUI() {
