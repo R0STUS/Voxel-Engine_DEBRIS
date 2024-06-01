@@ -3,6 +3,7 @@
 #include "../voxels/DebrisWorldGenerator.h"
 #include "../voxels/CubicWorldGenerator.h"
 #include "../voxels/FlatWorldGenerator.h"
+#include "../voxels/SpaceWorldGenerator.h"
 #include "../content/Content.h"
 #include <vector>
 #include <map>

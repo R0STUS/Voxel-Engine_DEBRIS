@@ -18,8 +18,9 @@
 #include "voxels/DefaultWorldGenerator.h"
 #include "voxels/FlatWorldGenerator.h"
 #include "voxels/CubicWorldGenerator.h"
- #include "voxels/DebrisWorldGenerator.h"
+#include "voxels/DebrisWorldGenerator.h"
 #include "voxels/TropicalWorldGenerator.h"
+#include "voxels/SpaceWorldGenerator.h"
 #include "window/Window.h"
 #include "window/Events.h"
 #include "window/Camera.h"
@@ -54,6 +55,7 @@ void addWorldGenerators() {
     WorldGenerators::addGenerator<FlatWorldGenerator>("core:flat");
     WorldGenerators::addGenerator<DebrisWorldGenerator>("core:debris");
     WorldGenerators::addGenerator<CubicWorldGenerator>("core:cubic");
+    WorldGenerators::addGenerator<SpaceWorldGenerator>("core:space");
 //    WorldGenerators::addGenerator<TropicalWorldGenerator>("core:tropical");
 }
 
